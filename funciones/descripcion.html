@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="estilo.css">
+    <title>Informacion</title>
+</head>
+
+<body>
+    <div class="bplanetas">
+        <a href="../index.html" class="btn1">Inicio </a>
+        <a href="./orbita.html" class="btn1">Planetas en orbita</a>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        var starGeometry = new THREE.BufferGeometry();
+        var starMaterial = new THREE.PointsMaterial({ color: 0xffffff });
+
+        function createStars() {
+            var vertices = [];
+            for (var i = 0; i < 10000; i++) {
+                var x = (Math.random() - 0.5) * 2000;
+                var y = (Math.random() - 0.5) * 2000;
+                var z = (Math.random() - 0.5) * 2000;
+                vertices.push(x, y, z);
+            }
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            var stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
+        }
+
+        function texto(fuente,texto, tamano, valorx, valory) {
+            const loader = new THREE.FontLoader();
+            loader.load(fuente, function (font) {
+                const geometry = new THREE.TextGeometry( texto, {
+                    font: font,
+                    size: tamano,
+                    height: 0.2,
+                });
+                const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                const textMesh = new THREE.Mesh(geometry, material);
+                scene.add(textMesh);
+
+                textMesh.position.set(valorx, valory, 0);
+            });
+        }
+
+        let fuentedes = './fuente/Nunito_Regular.json';
+        let fuentet = './fuente/Nunito Black_Regular.json';
+
+        const titulo = texto(fuentedes,'Haz click en el CENTRO del sol o un planeta para ver su información', 1.2, -27, 14);
+        const tsol = texto(fuentedes,'Sol', 1, -23, 5);
+        const tmercurio = texto(fuentedes,'Mercurio', 1, -10, 5);
+        const tvenus = texto(fuentedes,'Venus', 1, 5, 5);
+        const ttierra = texto(fuentedes,'Tierra', 1, 19, 5);
+        const tmarte = texto(fuentedes,'Marte', 1, -24, -5);
+        const tjupiter = texto(fuentedes,'Jupiter', 1, -9, -5);
+        const tsaturno = texto(fuentedes,'Saturno', 1, 5, -5);
+        const turano = texto(fuentedes,'Urano', 1, 19, -5);
+        const tneptuno = texto(fuentedes,'Neptuno', 1, 3, -10);
+
+
+        function planetas(size, texture, valorx, valory) {
+            const geo = new THREE.SphereGeometry(size, 50, 40);
+            const material = new THREE.MeshBasicMaterial({ map: texture });
+            const Mesh = new THREE.Mesh(geo, material);
+
+            scene.add(Mesh);
+            Mesh.position.set(valorx, valory, 0);
+
+            return { Mesh }
+        }
+
+        const solTexture = new THREE.TextureLoader().load('./imagenes/sol.jpg');
+        const sol = planetas(2.8, solTexture, -22, 9);
+
+        const mercTexture = new THREE.TextureLoader().load('./imagenes/mercurio2.jpeg');
+        const mercurio = planetas(1.8, mercTexture, -7, 9);
+
+        const venusTexture = new THREE.TextureLoader().load('./imagenes/venus2.jpg');
+        const venus = planetas(2, venusTexture, 7, 9);
+
+        const tierraTexture = new THREE.TextureLoader().load('./imagenes/tierra1.jpg');
+        const tierra = planetas(2, tierraTexture, 21, 9);
+
+        const marteTexture = new THREE.TextureLoader().load('./imagenes/Marte.jpg');
+        const marte = planetas(1.8, marteTexture, -22, -1);
+
+        const jupiterTexture = new THREE.TextureLoader().load('./imagenes/jupiter3.jpg');
+        const jupiter = planetas(2.8, jupiterTexture, -7, -1);
+
+        const uranoTexture = new THREE.TextureLoader().load('./imagenes/urano1.jpg');
+        const urano = planetas(2.4, uranoTexture, 21, -1);
+
+        const neptunoTexture = new THREE.TextureLoader().load('./imagenes/neptuno1.jpg');
+        const neptuno = planetas(2.4, neptunoTexture, 0, -10);
+
+
+
+
+        const saturnoGeometry = new THREE.SphereGeometry(2.6, 30, 30);
+        const saturnoTexture = new THREE.TextureLoader().load('./imagenes/saturno1.jpg');
+        const saturnoMaterial = new THREE.MeshBasicMaterial({ map: saturnoTexture });
+        const saturnoMesh = new THREE.Mesh(saturnoGeometry, saturnoMaterial);
+
+        const saturnoanilloGeometry = new THREE.RingGeometry(2.8, 4.5, 32, 4);
+        const saturnoanilloTexture = new THREE.TextureLoader().load('./imagenes/saturno1.jpg');
+        const saturnoanilloMaterial = new THREE.MeshBasicMaterial({ map: saturnoanilloTexture, side: THREE.DoubleSide });
+        const saturnoanilloMesh = new THREE.Mesh(saturnoanilloGeometry, saturnoanilloMaterial);
+        saturnoMesh.add(saturnoanilloMesh);
+        scene.add(saturnoMesh);
+
+        camera.position.set(0, 0, 40);
+
+        saturnoMesh.position.set(7, -1, 0);
+        saturnoanilloMesh.rotation.x = 1.5;
+
+        raycaster = new THREE.Raycaster();
+        mouse = new THREE.Vector2();
+
+        renderer.domElement.addEventListener('click', onMouseClick);
+
+        function redirectToPage(direction) {
+            window.location.href = direction;
+        }
+
+
+        function onMouseClick(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+
+            let intersects = raycaster.intersectObjects([sol.Mesh, mercurio.Mesh, venus.Mesh, tierra.Mesh, marte.Mesh, jupiter.Mesh, saturnoMesh, urano.Mesh, neptuno.Mesh]);
+
+            if (intersects.length > 0 && intersects[0].object === sol.Mesh) {
+                const infosol = redirectToPage("./platetas-info/sol.html");
+            }
+            if (intersects.length > 0 && intersects[0].object === mercurio.Mesh) {
+                const infosol = redirectToPage("./platetas-info/mercurio.html");
+            }
+            if (intersects.length > 0 && intersects[0].object === venus.Mesh) {
+                const infosol = redirectToPage("./platetas-info/venus.html");
+            }
+            if (intersects.length > 0 && intersects[0].object === tierra.Mesh) {
+                const infosol = redirectToPage("./platetas-info/tierra.html");
+            }
+            if (intersects.length > 0 && intersects[0].object === marte.Mesh) {
+                const infosol = redirectToPage("./platetas-info/marte.html");
+            }
+            if (intersects.length > 0 && intersects[0].object === jupiter.Mesh) {
+                const infosol = redirectToPage("./platetas-info/jupiter.html");
+            }
+            if (intersects.length > 0 && intersects[0].object === saturnoMesh) {
+                const infosol = redirectToPage("./platetas-info/saturno.html");
+            }
+            if (intersects.length > 0 && intersects[0].object === urano.Mesh) {
+                const infosol = redirectToPage("./platetas-info/urano.html");
+            }
+            if (intersects.length > 0 && intersects[0].object === neptuno.Mesh) {
+                const infosol = redirectToPage("./platetas-info/neptuno.html");
+            }
+        }
+
+
+
+
+        function animacion() {
+
+            sol.Mesh.rotateY(0.005);
+            mercurio.Mesh.rotateY(0.003);
+            venus.Mesh.rotateY(-0.001);
+            tierra.Mesh.rotateY(0.05);
+            marte.Mesh.rotateY(0.075);
+            jupiter.Mesh.rotateY(0.12);
+            saturnoMesh.rotateY(0.14);
+            urano.Mesh.rotateY(0.09);
+            neptuno.Mesh.rotateY(0.085);
+
+            requestAnimationFrame(animacion);
+            renderer.render(scene, camera);
+        }
+
+
+        createStars();
+        animacion();
+
+
+    </script>
+
+</body>
+
+</html>

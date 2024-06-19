@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="estilo.css">
+    <title>Sistema Solar</title>
+</head>
+
+<body class="FSS">
+    <a href="../index.html" class="btn2SS">Regresar al inicio</a>
+    <button id="vistaClasica" class="bvista">Vista clasica</button>
+    <button id="vistaArriba" class="bvista">Vista arriba</button>
+    <button id="vistaCentro" class="bvista">Vista centro</button>
+    <a href="./descripcion.html" class="btn2SS">Información</a>
+    <br><br>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0x333333);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0xFFFFFF, 1.5, 300);
+        pointLight.position.set(0, 2, 0);
+        scene.add(pointLight);
+
+        var starGeometry = new THREE.BufferGeometry();
+        var starMaterial = new THREE.PointsMaterial({ color: 0xffffff });
+
+        function createStars() {
+            var vertices = [];
+            for (var i = 0; i < 10000; i++) {
+                var x = (Math.random() - 0.5) * 2000;
+                var y = (Math.random() - 0.5) * 2000;
+                var z = (Math.random() - 0.5) * 2000;
+                vertices.push(x, y, z);
+            }
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            var stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
+        }
+
+        const solGeometry = new THREE.SphereGeometry(3, 30, 30);
+        const solTexture = new THREE.TextureLoader().load('./imagenes/sol.jpg');
+        const solMaterial = new THREE.MeshBasicMaterial({ map: solTexture });
+        const solMesh = new THREE.Mesh(solGeometry, solMaterial);
+        scene.add(solMesh);
+
+        const mercGeometry = new THREE.SphereGeometry(0.16, 30, 30);
+        const mercTexture = new THREE.TextureLoader().load('./imagenes/mercurio.jpg');
+        const mercMaterial = new THREE.MeshBasicMaterial({ map: mercTexture });
+        const mercMesh = new THREE.Mesh(mercGeometry, mercMaterial);
+        const mercObj = new THREE.Object3D();
+        mercObj.add(mercMesh);
+        scene.add(mercObj);
+
+        const venusGeometry = new THREE.SphereGeometry(.3, 30, 30);
+        const venusTexture = new THREE.TextureLoader().load('./imagenes/venus.jpg');
+        const venusMaterial = new THREE.MeshBasicMaterial({ map: venusTexture });
+        const venusMesh = new THREE.Mesh(venusGeometry, venusMaterial);
+        const venusObj = new THREE.Object3D();
+        venusObj.add(venusMesh);
+        scene.add(venusObj);
+
+        const tierraGeometry = new THREE.SphereGeometry(.3, 30, 30);
+        const tierraTexture = new THREE.TextureLoader().load('./imagenes/tierra1.jpg');
+        const tierraMaterial = new THREE.MeshBasicMaterial({ map: tierraTexture });
+        const tierraMesh = new THREE.Mesh(tierraGeometry, tierraMaterial);
+
+
+        const lunaGeometry = new THREE.SphereGeometry(0.16, 30, 30);
+        const lunaTexture = new THREE.TextureLoader().load('./imagenes/luna2.jpg');
+        const lunaMaterial = new THREE.MeshBasicMaterial({ map: lunaTexture });
+        const lunaMesh = new THREE.Mesh(lunaGeometry, lunaMaterial);
+        tierraMesh.add(lunaMesh);
+
+        const tierraObj = new THREE.Object3D();
+        tierraObj.add(tierraMesh);
+        scene.add(tierraObj);
+
+
+        const marteGeometry = new THREE.SphereGeometry(0.16, 30, 30);
+        const marteTexture = new THREE.TextureLoader().load('./imagenes/Marte.jpg');
+        const marteMaterial = new THREE.MeshBasicMaterial({ map: marteTexture });
+        const marteMesh = new THREE.Mesh(marteGeometry, marteMaterial);
+        const marteObj = new THREE.Object3D();
+        marteObj.add(marteMesh);
+        scene.add(marteObj);
+
+        const jupiterGeometry = new THREE.SphereGeometry(1.8, 30, 30);
+        const jupiterTexture = new THREE.TextureLoader().load('./imagenes/jupiter3.jpg');
+        const jupiterMaterial = new THREE.MeshStandardMaterial({ map: jupiterTexture });
+        const jupiterMesh = new THREE.Mesh(jupiterGeometry, jupiterMaterial);
+        const jupiterObj = new THREE.Object3D();
+        jupiterObj.add(jupiterMesh);
+        scene.add(jupiterObj);
+
+        const saturnoGeometry = new THREE.SphereGeometry(1.6, 30, 30);
+        const saturnoTexture = new THREE.TextureLoader().load('./imagenes/saturno1.jpg');
+        const saturnoMaterial = new THREE.MeshStandardMaterial({ map: saturnoTexture });
+        const saturnoMesh = new THREE.Mesh(saturnoGeometry, saturnoMaterial);
+        const saturnoObj = new THREE.Object3D();
+        saturnoObj.add(saturnoMesh);
+
+        const saturnoanilloGeometry = new THREE.RingGeometry(1.8, 2.5, 32, 4);
+        const saturnoanilloTexture = new THREE.TextureLoader().load('./imagenes/saturno1.jpg');
+        const saturnoanilloMaterial = new THREE.MeshStandardMaterial({ map: saturnoanilloTexture, side: THREE.DoubleSide });
+        const saturnoanilloMesh = new THREE.Mesh(saturnoanilloGeometry, saturnoanilloMaterial);
+        saturnoObj.add(saturnoanilloMesh);
+        scene.add(saturnoObj);
+
+        const uranoGeometry = new THREE.SphereGeometry(1.1, 30, 30);
+        const uranoTexture = new THREE.TextureLoader().load('./imagenes/urano1.jpg');
+        const uranoMaterial = new THREE.MeshStandardMaterial({ map: uranoTexture });
+        const uranoMesh = new THREE.Mesh(uranoGeometry, uranoMaterial);
+        const uranoObj = new THREE.Object3D();
+        uranoObj.add(uranoMesh);
+        scene.add(uranoObj);
+
+        const neptunoGeometry = new THREE.SphereGeometry(1, 30, 30);
+        const neptunoTexture = new THREE.TextureLoader().load('./imagenes/neptuno1.jpg');
+        const neptunoMaterial = new THREE.MeshStandardMaterial({ map: neptunoTexture });
+        const neptunoMesh = new THREE.Mesh(neptunoGeometry, neptunoMaterial);
+        const neptunoObj = new THREE.Object3D();
+        neptunoObj.add(neptunoMesh);
+        scene.add(neptunoObj);
+
+
+        camera.position.set(0, 0, 40);
+        solMesh.position.set(0, 3, 0);
+        mercMesh.position.set(3.5, 3, 0);
+        venusMesh.position.set(5, 3, 0);
+        tierraMesh.position.set(7, 3, 0);
+        lunaMesh.position.set(1, 0, 0);
+        marteMesh.position.set(9, 3, 0);
+        jupiterMesh.position.set(14, 3, 0);
+        saturnoMesh.position.set(20, 3, 0);
+        saturnoanilloMesh.position.set(20, 3, 0);
+        saturnoanilloMesh.rotation.x = 1.3;
+        uranoMesh.position.set(25, 3, 0);
+        neptunoMesh.position.set(29, 3, 0);
+
+
+
+
+
+        function animacion() {
+            solMesh.rotateY(0.005);
+
+            mercMesh.rotateY(0.003);
+            mercObj.rotateY(0.035);
+
+            venusMesh.rotateY(-0.001);
+            venusObj.rotateY(0.0065);
+
+            tierraMesh.rotateY(0.07);
+            tierraObj.rotateY(0.006);
+
+            lunaMesh.rotateY(0.003);
+
+            marteMesh.rotateY(0.075);
+            marteObj.rotateY(0.003);
+
+            jupiterMesh.rotateY(0.12);
+            jupiterObj.rotateY(0.0005)
+
+            saturnoMesh.rotateY(0.14);
+            saturnoObj.rotateY(0.0003);
+
+            uranoMesh.rotateY(0.09);
+            uranoObj.rotateY(0.0002);
+
+            neptunoMesh.rotateY(0.085);
+            neptunoObj.rotateY(0.0001);
+
+            requestAnimationFrame(animacion);
+            renderer.render(scene, camera);
+        }
+
+        createStars();
+        animacion();
+
+        document.getElementById("vistaClasica").addEventListener("click", function () {
+            camera.position.set(0, 3, 40);
+            camera.lookAt(0, 0, 0);
+        });
+        document.getElementById("vistaArriba").addEventListener("click", function () {
+            camera.position.set(0, 40, 0);
+            camera.lookAt(0, 0, 0);
+        });
+        document.getElementById("vistaCentro").addEventListener("click", function () {
+            camera.position.set(0, 3, 0);
+            camera.lookAt(14, 3, 0);
+        });
+
+    </script>
+</body>
+
+</html>

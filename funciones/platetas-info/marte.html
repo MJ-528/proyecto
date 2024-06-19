@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../estilo.css">
+    <title>Sistema Solar</title>
+</head>
+
+<body class="FSS">
+    <div class="bplanetas">
+        <a href="../descripcion.html" class="btn1">Regresar </a>
+        <a href="../orbita.html" class="btn1">Planetas en orbita</a>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        var starGeometry = new THREE.BufferGeometry();
+        var starMaterial = new THREE.PointsMaterial({ color: 0xffffff });
+
+        function createStars() {
+            var vertices = [];
+            for (var i = 0; i < 10000; i++) {
+                var x = (Math.random() - 0.5) * 2000;
+                var y = (Math.random() - 0.5) * 2000;
+                var z = (Math.random() - 0.5) * 2000;
+                vertices.push(x, y, z);
+            }
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            var stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
+        }
+
+        createStars();
+
+        const Geo = new THREE.SphereGeometry(8, 30, 30);
+        const Texture = new THREE.TextureLoader().load('../imagenes/Marte.jpg');
+        const Material = new THREE.MeshBasicMaterial({ map: Texture });
+        const Mesh = new THREE.Mesh(Geo, Material);
+        scene.add(Mesh);
+
+        function texto(fuente,texto, tamano, valorx, valory) {
+            const loader = new THREE.FontLoader();
+            loader.load(fuente, function (font) {
+                const geometry = new THREE.TextGeometry( texto, {
+                    font: font,
+                    size: tamano,
+                    height: 0.2,
+                });
+                const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                const textMesh = new THREE.Mesh(geometry, material);
+                scene.add(textMesh);
+
+                textMesh.position.set(valorx, valory, 0);
+            });
+        }
+
+        let fuentet = '../fuente/Nunito Black_Regular.json';
+        const titulo = texto(fuentet,'Marte', 2.5, -7, 12);
+
+        let fuentedes = '../fuente/Nunito_Regular.json';
+        const descripcion = texto(fuentedes,'\nDisctancia orbital(km): 227.943.824\nRadio ecuatorial(km): 3.389\nDuración del día: 24 horas y 37 minutos\nDuración del año: 687 días terrestres\nComposición de la atmósfera: Dióxido de Carbono,\n Nitrógeno y Argón ', 1, -2, 8);
+
+
+        camera.position.set(0, 0, 40);
+        Mesh.position.set(-12, 1, 0);
+
+
+        function animacion() {
+            Mesh.rotateY(0.075);
+
+            requestAnimationFrame(animacion);
+            renderer.render(scene, camera);
+        }
+
+        animacion();
+    </script>
+</body>
+
+</html>
